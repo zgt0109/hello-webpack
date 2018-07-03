@@ -11,7 +11,7 @@ let pathsToClean = [
 ]
 
 var isProd = process.env.NODE_ENV === 'production'; // true or false
-var cssDev = ['style-loader', 'css-loader', 'sass-loader'];
+var cssDev = ['style-loader', 'css-loader?sourceMap', 'sass-loader?sourceMap'];
 var cssProd = ExtractTextPlugin.extract({
   fallback: 'style-loader',
   //resolve-url-loader may be chained before sass-loader if necessary
@@ -22,6 +22,7 @@ var cssConfig = isProd ? cssProd : cssDev;
 var bootstrapConfig = isProd ? bootstrapEntryPoints.prod : bootstrapEntryPoints.dev;
 
 module.exports = {
+		devtool: 'source-map',
 		entry: {
 			"app.bundle": './src/app.js',
 			"contact": './src/contact.js',
@@ -66,7 +67,11 @@ module.exports = {
 			}),
 			// 这两行是新增的
 			new webpack.NamedModulesPlugin(),
-			new webpack.HotModuleReplacementPlugin()
+			new webpack.HotModuleReplacementPlugin(),
+			new webpack.ProvidePlugin({
+				$: 'jquery',
+				jQuery: 'jquery'
+			})
 		],
 		module: {
 			rules:[
